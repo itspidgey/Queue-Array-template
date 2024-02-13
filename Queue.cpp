@@ -11,7 +11,7 @@ Queue<T>::Queue(int max)
     numItems = 0;
     maxQue = max;
     front = 0;
-    rear = maxQue - 1;
+    rear = 0;
     items = new T[maxQue];
 }
 
@@ -24,7 +24,7 @@ Queue<T>::Queue()          // Default class constructor
     numItems = 0;
     maxQue = 500;
     front = 0;
-    rear = maxQue - 1;
+    rear = 0;
     items = new T[maxQue];
 }
 
@@ -39,21 +39,22 @@ void Queue<T>::MakeEmpty()
 // Post: front and rear have been reset to the empty state.
 {
     front = 0;
-    rear = maxQue - 1;
+    rear = 0;
+    numItems = 0;
 }
 
 template<class T>
 bool Queue<T>::IsEmpty() const
 // Returns true if the queue is empty; false otherwise.
 {
-    return false;
+    return numItems == 0;
 }
 
 template<class T>
 bool Queue<T>::IsFull() const
 // Returns true if the queue is full; false otherwise.
 {
-    return false;
+    return numItems >= maxQue;
 }
 
 template<class T>
@@ -61,6 +62,14 @@ void Queue<T>::Enqueue(T newItem)
 // Post: If (queue is not full) newItem is at the rear of the queue;
 //       otherwise a FullQueue exception is thrown.  
 {
+    if (IsFull()){
+        throw FullQueue();
+    }
+
+    items [rear] = newItem;
+    rear = (rear + 1) % maxQue;
+    numItems++;
+
 
 }
 
@@ -70,5 +79,13 @@ T Queue<T>::Dequeue()
 //       removed and a copy returned in item; 
 //       otherwise a EmptyQueue exception has been thrown.
 {
+    if (IsEmpty()){
+        throw EmptyQueue();
+    }
 
+    T value = items[front];
+
+    front = (front + 1) % maxQue;
+    numItems--;
+    return value;
 }
